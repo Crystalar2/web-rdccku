@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python to APK Converter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-upload-label {
+            display: block;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+        
+        .file-upload-label:hover {
+            background: #e9ecff;
+            border-color: #5a67d8;
+        }
+        
+        .file-upload-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .output-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .output-section.show {
+            display: block;
+        }
+        
+        .log-output {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .feature-card p {
+            color: #6c757d;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐍 Python to APK Converter</h1>
+            <p>Transform your Python projects into Android applications with ease</p>
+        </div>
+        
+        <div class="main-card">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('project')">📁 Project Setup</div>
+                <div class="tab" onclick="switchTab('app-info')">📱 App Information</div>
+                <div class="tab" onclick="switchTab('build')">🔨 Build & Generate</div>
+                <div class="tab" onclick="switchTab('help')">❓ Help</div>
+            </div>
+            
+            <!-- Project Setup Tab -->
+            <div class="tab-content active" id="project-tab">
+                <h2>Upload Your Python Project</h2>
+                <div class="form-group">
+                    <label>Main Python File (.py)</label>
+                    <div class="file-upload">
+                        <input type="file" id="mainFile" accept=".py" onchange="handleFileUpload('main')">
+                        <label for="mainFile" class="file-upload-label">
+                            <div class="file-upload-icon">📄</div>
+                            <div>Click to upload your main Python file</div>
+                            <small>Supports .py files</small>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Additional Files (Optional)</label>
+                    <div class="file-upload">
+                        <input type="file" id="additionalFiles" multiple onchange="handleFileUpload('additional')">
+                        <label for="additionalFiles" class="file-upload-label">
+                            <div class="file-upload-icon">📦</div>
+                            <div>Upload additional Python files, assets, or resources</div>
+                            <small>Multiple files supported</small>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Requirements (Dependencies)</label>
+                    <textarea id="requirements" placeholder="Enter Python packages (one per line)&#10;Example:&#10;kivy&#10;requests&#10;numpy"></textarea>
+                </div>
+                
+                <button class="btn btn-primary" onclick="switchTab('app-info')">Next: App Information →</button>
+            </div>
+            
+            <!-- App Information Tab -->
+            <div class="tab-content" id="app-info-tab">
+                <h2>Configure Your Android App</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>App Name *</label>
+                        <input type="text" id="appName" placeholder="My Python App" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Package Name *</label>
+                        <input type="text" id="packageName" placeholder="com.yourname.appname" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="version" placeholder="1.0.0" value="1.0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Version Code</label>
+                        <input type="number" id="versionCode" placeholder="1" value="1">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>App Description</label>
+                    <textarea id="appDescription" placeholder="Describe what your app does..."></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Developer Name</label>
+                        <input type="text" id="developerName" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Target SDK Version</label>
+                        <select id="targetSdk">
+                            <option value="33">Android 13 (API 33)</option>
+                            <option value="32">Android 12L (API 32)</option>
+                            <option value="31">Android 12 (API 31)</option>
+                            <option value="30">Android 11 (API 30)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>App Icon (Optional)</label>
+                    <div class="file-upload">
+                        <input type="file" id="appIcon" accept="image/*" onchange="handleFileUpload('icon')">
+                        <label for="appIcon" class="file-upload-label">
+                            <div class="file-upload-icon">🖼️</div>
+                            <div>Upload app icon (PNG recommended, 512x512px)</div>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Permissions</label>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 10px;">
+                        <label><input type="checkbox" id="internetPerm" checked> Internet Access</label>
+                        <label><input type="checkbox" id="storagePerm"> Storage Access</label>
+                        <label><input type="checkbox" id="cameraPerm"> Camera Access</label>
+                        <label><input type="checkbox" id="locationPerm"> Location Access</label>
+                        <label><input type="checkbox" id="microphonePerm"> Microphone Access</label>
+                        <label><input type="checkbox" id="vibratePerm"> Vibration</label>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" onclick="switchTab('build')">Next: Build APK →</button>
+            </div>
+            
+            <!-- Build Tab -->
+            <div class="tab-content" id="build-tab">
+                <h2>Generate Your APK</h2>
+                
+                <div class="form-group">
+                    <label>Build Configuration</label>
+                    <select id="buildType">
+                        <option value="debug">Debug Build (for testing)</option>
+                        <option value="release">Release Build (for distribution)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Python Framework</label>
+                    <select id="framework">
+                        <option value="kivy">Kivy (Recommended for GUI apps)</option>
+                        <option value="pygame">Pygame (For games)</option>
+                        <option value="tkinter">Tkinter (Basic GUI)</option>
+                        <option value="console">Console App (Command line)</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-success" onclick="startBuild()" id="buildBtn">
+                    🚀 Generate APK
+                </button>
+                
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Preparing build...</div>
+                </div>
+                
+                <div class="output-section" id="outputSection">
+                    <h3>Build Output</h3>
+                    <div class="log-output" id="logOutput"></div>
+                    <button class="btn btn-primary" onclick="downloadAPK()" id="downloadBtn" style="display: none;">
+                        📱 Download APK
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Help Tab -->
+            <div class="tab-content" id="help-tab">
+                <h2>How to Use Python to APK Converter</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📁</div>
+                        <h3>1. Upload Project</h3>
+                        <p>Upload your main Python file and any additional resources your app needs.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>2. Configure App</h3>
+                        <p>Set your app name, package name, version, and other Android-specific settings.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔨</div>
+                        <h3>3. Build APK</h3>
+                        <p>Choose your framework and build type, then generate your Android APK file.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h3>4. Install & Test</h3>
+                        <p>Download the APK and install it on your Android device for testing.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 10px;">
+                    <h3>Supported Python Libraries</h3>
+                    <ul style="margin-top: 10px; line-height: 1.8;">
+                        <li><strong>Kivy:</strong> Cross-platform GUI framework (Recommended)</li>
+                        <li><strong>Pygame:</strong> Game development library</li>
+                        <li><strong>Requests:</strong> HTTP library for API calls</li>
+                        <li><strong>NumPy:</strong> Scientific computing</li>
+                        <li><strong>Pillow:</strong> Image processing</li>
+                        <li><strong>SQLite3:</strong> Database operations</li>
+                    </ul>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 20px; background: #fff3cd; border-radius: 10px; border: 1px solid #ffeaa7;">
+                    <h3>⚠️ Important Notes</h3>
+                    <ul style="margin-top: 10px; line-height: 1.8;">
+                        <li>This is a demo interface - actual APK generation requires server-side processing</li>
+                        <li>Some Python libraries may not be compatible with Android</li>
+                        <li>Test your APK thoroughly before distribution</li>
+                        <li>For production apps, consider using Android Studio for final optimization</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFiles = {
+            main: null,
+            additional: [],
+            icon: null
+        };
+        
+        function switchTab(tabName) {
+            // Remove active class from all tabs and contents
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to selected tab and content
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+        
+        function handleFileUpload(type) {
+            const fileInput = event.target;
+            const files = fileInput.files;
+  
